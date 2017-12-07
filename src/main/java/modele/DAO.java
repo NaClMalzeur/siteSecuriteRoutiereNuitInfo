@@ -5,11 +5,14 @@
  */
 package modele;
 
+import Entitys.LatLng;
+import Entitys.Place;
 import Entitys.UtilisateurEntity;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.DataSource;
@@ -143,6 +146,52 @@ public class DAO {
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+    }
+    public ArrayList<Place> getNearestPlaces(Place current_place, double radius) throws DAOException {
+        ArrayList<Place> result = new ArrayList<Place>();
+        String sql = "SELECT t.Long_dep,\n" +
+"        t.Lat_dep,\n" +
+"                 * DEGREES(ACOS(COS(RADIANS(p.latpoint))\n" +
+"                 * COS(RADIANS(t.Lat_dep))\n" +
+"                 * COS(RADIANS(p.longpoint) - RADIANS(t.Long_dep))\n" +
+"                 + SIN(RADIANS(p.latpoint))\n" +
+"                 * SIN(RADIANS(t.Lat_dep)))) AS distance_in_km\n" +
+"  FROM Trajet AS t\n" +
+"  JOIN (   /* these are the query parameters */\n" +
+"        SELECT  ?  AS latpoint, ? AS longpoint,\n" +
+"                ? AS radius,      111.045 AS distance_unit\n" +
+"    ) AS p ON 1=1\n" +
+"  WHERE t.Lat_dep\n" +
+"     BETWEEN p.latpoint  - (p.radius / p.distance_unit)\n" +
+"         AND p.latpoint  + (p.radius / p.distance_unit)\n" +
+"    AND t.Long_dep\n" +
+"     BETWEEN p.longpoint - (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))\n" +
+"         AND p.longpoint + (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))\n" +
+"  ORDER BY distance_in_km\n" +
+"  LIMIT 15";
+        LatLng current_latlng = current_place.getL();
+        double current_lat = current_latlng.getLatitude();
+        double current_long = current_latlng.getLongitude();
+        try (Connection connection = myDataSource.getConnection(); // Ouvrir une connexion
+                PreparedStatement stmt = connection.prepareStatement(sql);) {
+            stmt.setDouble(1, current_lat);
+            stmt.setDouble(2,current_long);
+            stmt.setDouble(3, radius);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String nom = rs.getString("NAME");
+                double long_dep = rs.getDouble("LONG_DEP");
+                double lat_dep = rs.getDouble("LAT_DEP");
+                LatLng new_latlng = new LatLng(lat_dep, long_dep);
+                Place new_place = new Place(nom, new_latlng);
+                result.add(new_place);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+            throw new DAOException(ex.getMessage());
+        }
+        return result;
     }
     /*
     public int addWarning(Warning war) throws DAOException {
