@@ -5,6 +5,7 @@
  */
 package modele;
 
+import Entitys.AccidentsEntity;
 import Entitys.LatLng;
 import Entitys.Place;
 import Entitys.UtilisateurEntity;
@@ -193,8 +194,7 @@ public class DAO {
         }
         return result;
     }
-    /*
-    public int addWarning(Warning war) throws DAOException {
+    public int addWarning(AccidentsEntity war) throws DAOException {
             int resualt = 0;
             String sql = "INSERT INTO ACCIDENTS (LONGITUDE, LATITUDE,"
                     + " TYPE_ACCID, COMMENTAIRE, DATE, SALES_DATE,"
@@ -202,10 +202,10 @@ public class DAO {
             try (Connection connection = myDataSource.getConnection();
                     PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-                stmt.setFloat(1, war.getLat());
-                stmt.setFloat(2, war.getLon());
-                stmt.setString(3, war.getCat());
-                stmt.setString(4, war.getCom());
+                stmt.setDouble(1, war.getLatitude());
+                stmt.setDouble(2, war.getLongitude());
+                stmt.setString(3, war.getType());
+                stmt.setString(4, war.getCommentaire());
                 stmt.setDate(5, war.getDate());
                 resualt = stmt.executeUpdate();
             } catch (SQLException ex) {
@@ -215,5 +215,4 @@ public class DAO {
             }
             return resualt;
         }
-    */
 }
