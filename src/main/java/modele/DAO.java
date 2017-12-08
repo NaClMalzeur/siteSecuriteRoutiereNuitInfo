@@ -336,4 +336,23 @@ public class DAO {
         
         return lst;
     }
+        
+        public ArrayList<Place> getAllTrajet() throws SQLException {
+        String sql = "SELECT LONG_DEP, LAT_DEP, TRAJET_ID FROM TRAJET";
+        ArrayList<Place> result_list = new ArrayList<Place>();
+        try (Connection connection = myDataSource.getConnection(); 
+		     PreparedStatement stmt = connection.prepareStatement(sql)) {
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+                            Double long_dep = rs.getDouble("LONG_DEP");
+                            Double lat_dep = rs.getDouble("LAT_DEP");
+                            int trajet_id = rs.getInt("TRAJET_ID");
+                            LatLng latlng_courant = new LatLng(lat_dep, long_dep);
+                            Place place_courant = new Place(String.valueOf(trajet_id),latlng_courant);
+                            result_list.add(place_courant);
+
+			}
+		}
+        return result_list;
+    }
 }
