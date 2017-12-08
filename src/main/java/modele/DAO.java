@@ -10,6 +10,7 @@ import Entitys.Event;
 import Entitys.LatLng;
 import Entitys.Place;
 import Entitys.UtilisateurEntity;
+import Entitys.VehiculeEntity;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -280,6 +281,29 @@ public class DAO {
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+    public List<VehiculeEntity> listVehicule(int isProprio){
+        List<VehiculeEntity> lst = new ArrayList<VehiculeEntity>();
+        String sql = "SELECT * FROM vehicule WHERE proprietaire_id = ?";
+        try (Connection connection = myDataSource.getConnection();
+                    PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, isProprio);
+            
+            stmt.executeQuery();
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                int vehicId = rs.getInt("vehic_id");
+                int nbPlace = rs.getInt("nb_places");
+                String modele = rs.getString("modele");
+                String marque = rs.getString("marque");
+                String couleur = rs.getString("couleur");
+                
+                VehiculeEntity vehicule = new VehiculeEntity(vehicId, isProprio, nbPlace, modele, marque, couleur);
+                
+                lst.add(vehicule);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return lst;
     }
 }
