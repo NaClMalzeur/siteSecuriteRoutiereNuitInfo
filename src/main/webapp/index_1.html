@@ -112,7 +112,7 @@
                 });
 
                 directionsDisplay.setMap(map);
-
+                initNearestDepartures(position, map);
                 var onChangeHandler = function () {
                     calculateAndDisplayRoute(directionsService, directionsDisplay);
                 };
@@ -185,6 +185,7 @@
                     success:function(data){
                         for (j = 0; j < data.length; j++) {
                             addWarning(map,data[j].type,data[j].y,data[j].x);
+                            console.log(data[j].type,data[j].y,data[j].x);
                             
                         }
                         
@@ -213,6 +214,45 @@
         var WarningMarker = new google.maps.Marker({
         position: {lat: lat, lng: long}, map: map, icon: image});
     }
+      function initNearestDepartures(position, map) {
+                $.ajax({
+                    async: false,
+                    url: "NearestDeparturesServlet",
+                    dataType: "json",
+                    data: {"lat": position.coords.latitude, "long": position.coords.longitude},
+                    error: showError,
+                    success: function (result) {
+                        drawMarkers(result, map);
+                    }
+
+                });
+            }
+
+            function drawMarkers(result, map) {
+               
+
+                for (var i = 0; i <result.length; i++) {
+                    var lat = parseFloat(result[i].latlng.latitude);
+                    var long = parseFloat(result[i].latlng.longitude);
+                    var myLatLng = new google.maps.LatLng(lat, long);
+                    //var myLatLng = {lat,long};
+                    //alert(myLatLng.lat+myLatLng.long);
+
+                    var marker = new google.maps.Marker({
+                        position: myLatLng,
+                        map: map,
+                        title: result[i].name
+                    });
+                    marker.addListener('click', function () {
+                        alert(this.getTitle());
+                    });
+                }
+
+            }
+            
+                        function showError(xhr, status, message) {
+                alert(JSON.parse(xhr.responseText).message);
+            }
         </script>
         <script async defer
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMhf9dIX7R6g0fbvBw-ItGHc96NqO7cBM&callback=getLocation">
