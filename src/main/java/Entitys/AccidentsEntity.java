@@ -5,6 +5,7 @@
  */
 package Entitys;
 
+import java.awt.geom.Point2D;
 import java.sql.Date;
 
 
@@ -15,16 +16,14 @@ import java.sql.Date;
  */
 public class AccidentsEntity {
     private int numAccident;
-    private double longitude;
-    private double latitude;
+    private Point2D.Float point;
     private String type;
     private String Commentaire;
     private Date date;
 
-    public AccidentsEntity(int numAccident, double longitude, double latitude, String type, String Commentaire, Date date) {
+    public AccidentsEntity(int numAccident, float longitude, float latitude, String type, String Commentaire, Date date) {
         this.numAccident = numAccident;
-        this.longitude = longitude;
-        this.latitude = latitude;
+        this.point=new Point2D.Float(longitude,latitude);
         this.type = type;
         this.Commentaire = Commentaire;
         this.date = date;
@@ -38,20 +37,8 @@ public class AccidentsEntity {
         this.numAccident = numAccident;
     }
 
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public Point2D.Float getPoint(){
+        return this.point;
     }
 
     public String getType() {

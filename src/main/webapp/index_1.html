@@ -163,7 +163,7 @@
                         var step = 1;
                         var infowindow2 = new google.maps.InfoWindow();
                         infowindow2.setContent("Distance: " + totalDistance.toFixed(2) + " KM " + "<br>" +
-                                "Duration: " + totalDuration + " min " + " ");
+                                "Duration: " + totalDuration.toFixed(2) + " min " + " ");
                         infowindow2.setPosition(response.routes[0].legs[0].steps[step].end_location);
 
                         infowindow2.open(map);
@@ -184,8 +184,8 @@
                     data: {json:points},
                     success:function(data){
                         for (j = 0; j < data.length; j++) {
-                            addWarning(map,"accident",data[j].y,data[j].x);
-                            console.log(data[j].y,data[j].x);
+                            addWarning(map,data[j].type,data[j].y,data[j].x);
+                            
                         }
                         
                     }
