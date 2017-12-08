@@ -11,13 +11,15 @@ package Entitys;
  */
 public class VehiculeEntity {
     private int vehiculeId;
+    private int proprietaireId;
     private int nbPlaces;
     private String marque;
     private String modele;
     private String couleur;
 
-    public VehiculeEntity(int vehiculeId, int nbPlaces, String marque, String modele, String couleur) {
+    public VehiculeEntity(int vehiculeId, int proprietaireId, int nbPlaces, String marque, String modele, String couleur) {
         this.vehiculeId = vehiculeId;
+        this.proprietaireId = proprietaireId;
         this.nbPlaces = nbPlaces;
         this.marque = marque;
         this.modele = modele;
@@ -30,6 +32,14 @@ public class VehiculeEntity {
 
     public void setVehiculeId(int vehiculeId) {
         this.vehiculeId = vehiculeId;
+    }
+
+    public int getProprietaireId() {
+        return proprietaireId;
+    }
+
+    public void setProprietaireId(int proprietaireId) {
+        this.proprietaireId = proprietaireId;
     }
 
     public int getNbPlaces() {
@@ -63,6 +73,6 @@ public class VehiculeEntity {
     public void setCouleur(String couleur) {
         this.couleur = couleur;
     }
-    
+
     
 }
