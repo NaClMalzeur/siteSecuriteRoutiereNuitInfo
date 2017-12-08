@@ -11,6 +11,7 @@ import Entitys.LatLng;
 import Entitys.Place;
 import Entitys.UtilisateurEntity;
 import Entitys.VehiculeEntity;
+import java.awt.geom.Point2D;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -306,6 +307,33 @@ public class DAO {
         } catch (SQLException ex) {
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return lst;
+    }
+    
+        public List<Point2D.Float> listAccidentsByPoints(){
+        List<Point2D.Float> lst = new ArrayList<Point2D.Float>();
+        String sql = "SELECT * FROM accidents";
+        
+        try (Connection connection = myDataSource.getConnection();
+                    PreparedStatement stmt = connection.prepareStatement(sql)) {
+            
+            stmt.executeQuery();
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    
+
+                    float longitude = rs.getFloat("longitude");
+                    float lat = rs.getFloat("latitude");
+        
+                    lst.add(new Point2D.Float(longitude,lat));
+                }
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         return lst;
     }
 }
