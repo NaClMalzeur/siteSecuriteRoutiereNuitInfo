@@ -280,6 +280,8 @@ public class DAO {
         } catch (SQLException ex) {
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return lst;
+    }
         
     public List<VehiculeEntity> listVehicule(int isProprio){
         List<VehiculeEntity> lst = new ArrayList<VehiculeEntity>();
