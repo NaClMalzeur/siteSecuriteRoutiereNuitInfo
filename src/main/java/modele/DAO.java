@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.DataSource;
@@ -198,14 +199,15 @@ public class DAO {
             int resualt = 0;
             String sql = "INSERT INTO ACCIDENTS (LONGITUDE, LATITUDE,"
                     + " TYPE_ACCID, COMMENTAIRE, DATE, SALES_DATE,"
-                    + " VALUES (?, ?, ?, ?, ?)";
+                    + " VALUES (?, ?, ?, ?, ?, ?)";
             try (Connection connection = myDataSource.getConnection();
                     PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-                stmt.setDouble(1, war.getLatitude());
-                stmt.setDouble(2, war.getLongitude());
-                stmt.setString(3, war.getType());
-                stmt.setString(4, war.getCommentaire());
+                stmt.setInt(1, newId("accidents"));
+                stmt.setDouble(2, war.getLatitude());
+                stmt.setDouble(3, war.getLongitude());
+                stmt.setString(4, war.getType());
+                stmt.setString(5, war.getCommentaire());
                 stmt.setDate(5, war.getDate());
                 resualt = stmt.executeUpdate();
             } catch (SQLException ex) {
@@ -215,4 +217,11 @@ public class DAO {
             }
             return resualt;
         }
+    
+    
+    public List<AccidentsEntity> listAccidents(){
+        List<AccidentsEntity> lst = new ArrayList<AccidentsEntity>();
+        return null;
+        //String 
+    }
 }
