@@ -176,7 +176,7 @@
             }
             
             function getAcc(points){
-                console.log("called");
+                
                 $.ajax({
                     url:"AccidentSurTrajet",
                     type:"POST",
@@ -184,8 +184,7 @@
                     data: {json:points},
                     success:function(data){
                         for (j = 0; j < data.length; j++) {
-                            addWarning(map,data[j].type,data[j].point.y,data[j].point.x);
-                            console.log(data[j]);
+                            addWarning(data[j].numAccident,j,map,data[j].type,data[j].point.y,data[j].point.x);
                             
                         }
                         
@@ -193,7 +192,7 @@
                 });
             }
             
-            function addWarning(map,type,lat,long){//type = le type d'incident à signaler
+            function addWarning(numAccident,i,map,type,lat,long){//type = le type d'incident à signaler
         switch(type){
             case "bouchon":
                 var image = 'image/bouchons.png';
@@ -213,6 +212,16 @@
         }     
         var WarningMarker = new google.maps.Marker({
         position: {lat: lat, lng: long}, map: map, icon: image});
+        var infowindow = new google.maps.InfoWindow();
+        google.maps.event.addListener(WarningMarker, 'click', (function(WarningMarker, i) {
+        return function() {
+            infowindow.setContent('<div><h3>Accident num: ' + numAccident +
+               '</h3><div></div>'+'<br><a href="/DeleteAccident">Delete</a></div>');
+            
+            infowindow.open(map, WarningMarker);
+        };
+    })(WarningMarker, i));
+    
     }
       function initNearestDepartures(position, map) {
                 $.ajax({
@@ -245,6 +254,7 @@
                     });
                     marker.addListener('click', function () {
                         alert(this.getTitle());
+                        
                     });
                 }
 

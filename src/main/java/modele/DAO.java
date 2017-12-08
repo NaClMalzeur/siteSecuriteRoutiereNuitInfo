@@ -355,4 +355,8 @@ public class DAO {
 		}
         return result_list;
     }
+        
+        public void DeleteAccident(int acc_num) {
+            
+        }
 }

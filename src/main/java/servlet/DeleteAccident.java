@@ -5,15 +5,9 @@
  */
 package servlet;
 
-import Entitys.AccidentsEntity;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -28,8 +22,8 @@ import modele.DataSourceFactory;
  *
  * @author Ehsan
  */
-@WebServlet(name = "AccidentSurTrajet", urlPatterns = {"/AccidentSurTrajet"})
-public class AccidentSurTrajet extends HttpServlet {
+@WebServlet(name = "DeleteAccident", urlPatterns = {"/DeleteAccident"})
+public class DeleteAccident extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,65 +36,18 @@ public class AccidentSurTrajet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        
         
         try {
             DAO dao = new DAO(DataSourceFactory.getDataSource());
-            
-             String[] get = request.getParameterValues("json[]");
-              ArrayList<AccidentsEntity> pointstosend = new ArrayList<AccidentsEntity>();
-              List<AccidentsEntity> points = dao.listAccidents();
-
-             for (String str : get) {
-                 String[] xy = str.split(",");
-                 float y = Float.valueOf(xy[0]);
-                 float x = Float.valueOf(xy[1]);
-                 Point2D.Float p = new Point2D.Float(x,y);
-                 for (AccidentsEntity ac_point : points) {
-  
-                     if (distFrom(p,ac_point.getPoint())<500) {
-                         pointstosend.add(ac_point);
-                     }
-                 }
-             }
-             
-             try (PrintWriter out = response.getWriter()) {
-			// On spécifie que la servlet va générer du JSON
-			
-			// Générer du JSON
-			// Gson gson = new Gson();
-			// setPrettyPrinting pour que le JSON généré soit plus lisible
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			out.println(gson.toJson(pointstosend));
-		}
-             
-             
-             
-             
-            
-             
-            
+            response.setContentType("text/html;charset=UTF-8");
+        String numAccident = request.getParameter("numAccident");
+        if (numAccident!= null) {
+            dao.DeleteAccident(Integer.valueOf(numAccident));
+        }
         } catch (SQLException ex) {
-            Logger.getLogger(AccidentSurTrajet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeleteAccident.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-       
-       
-        
-    }
-
-public int distFrom(Point2D.Float p1,Point2D.Float p2) {//float lat1, float lng1, float lat2, float lng2) {
-    double earthRadius = 6371000; //meters
-    double dLat = Math.toRadians(p2.y-p1.y);
-    double dLng = Math.toRadians(p2.x-p1.x);
-    double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-               Math.cos(Math.toRadians(p1.y)) * Math.cos(Math.toRadians(p2.y)) *
-               Math.sin(dLng/2) * Math.sin(dLng/2);
-    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    int dist = (int) (earthRadius * c);
-
-    return dist;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
