@@ -43,7 +43,7 @@
 
         </div>
         <div id="map">
-            <input type="image" src="https://cdn3.iconfinder.com/data/icons/streamline-icon-set-free-pack/48/Streamline-18-128.png" />
+            
         </div>
         <div id="test"> </div>
         <script> /*
@@ -139,16 +139,23 @@
                             totalDistance += legs[i].distance.value;
                             totalDuration += legs[i].duration.value;
                             var steps = legs[i].steps;
+                            
                             for (j = 0; j < steps.length; j++) {
                                 var nextSegment = steps[j].path;
-                                console.log(steps[j].path[0].toString());
-                                points.push(steps[j].path[0]);
+                                //console.log(steps[j].path[0].toString());
+                                points.push(steps[j].path[0].lat()+","+steps[j].path[0].lng());
+                                var index=0;
+                                while (index < nextSegment.length) {
+                                    //console.log(nextSegment[index].toString());
+                                    index+=10;
+                                }
                                 //for (k = 0; k < nextSegment.length; k++) {
                                 //  points.push(nextSegment[k]);
                                 //console.log(nextSegment[k]);
                                 //}
                             }
                         }
+                        
 
                         totalDuration /= 60;
                         totalDistance /= 1000;
@@ -157,15 +164,55 @@
                         var infowindow2 = new google.maps.InfoWindow();
                         infowindow2.setContent("Distance: " + totalDistance.toFixed(2) + " KM " + "<br>" +
                                 "Duration: " + totalDuration + " min " + " ");
-                        infowindow2.setPosition(points[Math.floor(points.length / 2)]);
+                        infowindow2.setPosition(response.routes[0].legs[0].steps[step].end_location);
 
                         infowindow2.open(map);
-
+                        getAcc(points);
+                        
                     } else {
                         window.alert('Directions request failed due to ' + status);
                     }
                 });
             }
+            
+            function getAcc(points){
+                console.log("called");
+                $.ajax({
+                    url:"AccidentSurTrajet",
+                    type:"POST",
+                    dataType:'json',
+                    data: {json:points},
+                    success:function(data){
+                        for (j = 0; j < data.length; j++) {
+                            addWarning(map,"accident",data[j].y,data[j].x);
+                            console.log(data[j].y,data[j].x);
+                        }
+                        
+                    }
+                });
+            }
+            
+            function addWarning(map,type,lat,long){//type = le type d'incident à signaler
+        switch(type){
+            case "bouchon":
+                var image = 'image/bouchons.png';
+                break;
+            case "chausee":
+                var image = 'image/chaussee.png';
+                break;
+            case "accident":
+                var image = 'image/attention.png';
+                break;
+            case "animaux":
+                var image = 'image/animaux.png';
+                break;
+            case "travaux":
+                var image = 'image/travaux.png';
+                break;
+        }     
+        var WarningMarker = new google.maps.Marker({
+        position: {lat: lat, lng: long}, map: map, icon: image});
+    }
         </script>
         <script async defer
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMhf9dIX7R6g0fbvBw-ItGHc96NqO7cBM&callback=getLocation">
