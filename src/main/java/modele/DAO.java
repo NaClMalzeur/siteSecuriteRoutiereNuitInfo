@@ -6,6 +6,7 @@
 package modele;
 
 import Entitys.AccidentsEntity;
+import Entitys.Event;
 import Entitys.LatLng;
 import Entitys.Place;
 import Entitys.UtilisateurEntity;
@@ -241,6 +242,37 @@ public class DAO {
                     AccidentsEntity accident = new AccidentsEntity(accidId, longitude, lat, type, com, date);
                     
                     lst.add(accident);
+                }
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return lst;
+    }
+    
+    
+    public List<Event> listEvent(){
+        List<Event> lst = new ArrayList<Event>();
+        String sql = "SELECT * FROM EVENT";
+        try (Connection connection = myDataSource.getConnection();
+                    PreparedStatement stmt = connection.prepareStatement(sql)) {
+            
+            stmt.executeQuery();
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    
+                    float lon = rs.getFloat("longitude");
+                    float lat = rs.getInt("latitude");
+                    String name = rs.getString("nom");
+                    String userName = rs.getString("user_name");
+                    Date date = rs.getDate("date");
+                    
+                    Event event = new Event(lon, lat, name, userName, date);
+                    
+                    lst.add(event);
                 }
             }
             
