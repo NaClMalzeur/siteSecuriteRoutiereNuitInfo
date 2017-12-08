@@ -207,8 +207,8 @@ public class DAO {
             try (Connection connection = myDataSource.getConnection();
                     PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-                stmt.setDouble(1, war.getLongitude());
-                stmt.setDouble(2, war.getLatitude());
+                stmt.setFloat(1, war.getPoint().x);
+                stmt.setFloat(2, war.getPoint().y);
                 stmt.setString(3, war.getType());
                 stmt.setString(4, war.getCommentaire());
                 stmt.setDate(5, war.getDate());
@@ -235,8 +235,8 @@ public class DAO {
                 while (rs.next()) {
                     
                     int accidId = rs.getInt("accid_id");
-                    double longitude = rs.getInt("longitude");
-                    double lat = rs.getInt("latitude");
+                    float longitude = rs.getFloat("longitude");
+                    float lat = rs.getFloat("latitude");
                     String type = rs.getString("type_accid");
                     String com = rs.getString("commentaire");
                     Date date = rs.getDate("date");
