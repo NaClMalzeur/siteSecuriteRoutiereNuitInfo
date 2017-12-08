@@ -10,6 +10,7 @@ import Entitys.LatLng;
 import Entitys.Place;
 import Entitys.UtilisateurEntity;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,7 +34,7 @@ public class DAO {
     public DAO(DataSource dataSource) {
             this.myDataSource = dataSource;
     }
-    
+    /*
     private int newId(String table){
         String attribut = "";
         switch(table){
@@ -83,7 +84,7 @@ public class DAO {
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return newID;
-    }
+    }*/
     
     public UtilisateurEntity logIn(String mail, String motDePasse){
         String sql = "SELECT * FROM utilisateur WHERE mail = ? AND mot_de_passe = ?";
@@ -125,22 +126,22 @@ public class DAO {
     
     public void signIn(UtilisateurEntity util){
         
-        String sql = "INSERT INTO utilisateur"
-                + "VALUES(?,?,?,?,?,?,?,?,?,?,false)";
+        String sql = "INSERT INTO utilisateur (nom, prenom, num_rue, rue, ville, code_postal, mail, telephone, mot_de_passe, admin)"
+                + "VALUES(?,?,?,?,?,?,?,?,?,false)";
         
         try (Connection connection = myDataSource.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(sql)) {
             
-            pstmt.setInt(1, newId("utilisateur"));
-            pstmt.setString(2, util.getNom());
-            pstmt.setString(3, util.getPrenom());
-            pstmt.setInt(4, util.getNumRue());
-            pstmt.setString(5, util.getRue());
-            pstmt.setString(6, util.getVille());
-            pstmt.setString(7, util.getCodePostal());
-            pstmt.setString(8, util.getEmail());
-            pstmt.setString(9, util.getTelephone());
-            pstmt.setString(10, util.getMotDePasse());
+            //pstmt.setInt(1, newId("utilisateur"));
+            pstmt.setString(1, util.getNom());
+            pstmt.setString(2, util.getPrenom());
+            pstmt.setInt(3, util.getNumRue());
+            pstmt.setString(4, util.getRue());
+            pstmt.setString(5, util.getVille());
+            pstmt.setString(6, util.getCodePostal());
+            pstmt.setString(7, util.getEmail());
+            pstmt.setString(8, util.getTelephone());
+            pstmt.setString(9, util.getMotDePasse());
             
             pstmt.executeUpdate();
             
@@ -198,16 +199,15 @@ public class DAO {
     public int addWarning(AccidentsEntity war) throws DAOException {
             int resualt = 0;
             String sql = "INSERT INTO ACCIDENTS (LONGITUDE, LATITUDE,"
-                    + " TYPE_ACCID, COMMENTAIRE, DATE, SALES_DATE,"
-                    + " VALUES (?, ?, ?, ?, ?, ?)";
+                    + " TYPE_ACCID, COMMENTAIRE, DATE)"
+                    + " VALUES (?, ?, ?, ?, ?)";
             try (Connection connection = myDataSource.getConnection();
                     PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-                stmt.setInt(1, newId("accidents"));
+                stmt.setDouble(1, war.getLongitude());
                 stmt.setDouble(2, war.getLatitude());
-                stmt.setDouble(3, war.getLongitude());
-                stmt.setString(4, war.getType());
-                stmt.setString(5, war.getCommentaire());
+                stmt.setString(3, war.getType());
+                stmt.setString(4, war.getCommentaire());
                 stmt.setDate(5, war.getDate());
                 resualt = stmt.executeUpdate();
             } catch (SQLException ex) {
@@ -221,7 +221,33 @@ public class DAO {
     
     public List<AccidentsEntity> listAccidents(){
         List<AccidentsEntity> lst = new ArrayList<AccidentsEntity>();
-        return null;
-        //String 
+        String sql = "SELECT * FROM accidents";
+        
+        try (Connection connection = myDataSource.getConnection();
+                    PreparedStatement stmt = connection.prepareStatement(sql)) {
+            
+            stmt.executeQuery();
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    
+                    int accidId = rs.getInt("accid_id");
+                    double longitude = rs.getInt("longitude");
+                    double lat = rs.getInt("latitude");
+                    String type = rs.getString("type_accid");
+                    String com = rs.getString("commentaire");
+                    Date date = rs.getDate("date");
+                    
+                    AccidentsEntity accident = new AccidentsEntity(accidId, longitude, lat, type, com, date);
+                    
+                    lst.add(accident);
+                }
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return lst;
     }
 }
