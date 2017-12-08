@@ -34,6 +34,7 @@ and open the template in the editor.
         addWarning(map,"accident",-26.000,120.044);
         addWarning(map,"animaux",26.000,120.044);
         addWarning(map,"travaux",17.000,13.044);
+        addEvent(map,17.500,200.000);
       }
     function addWarning(map,type,lat,long){//type = le type d'incident à signaler
         switch(type){
@@ -52,10 +53,15 @@ and open the template in the editor.
             case "travaux":
                 var image = 'image/travaux.png';
                 break;
-        }     
+        }
         var WarningMarker = new google.maps.Marker({
         position: {lat: lat, lng: long}, map: map, icon: image});
     }
+    function addEvent(map,lat,long){
+        var image = 'image/fete.png';
+        var EventMarker = new google.maps.Marker({
+        position: {lat: lat, lng: long}, map: map, icon: image});
+        }
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMhf9dIX7R6g0fbvBw-ItGHc96NqO7cBM&callback=initMap">
