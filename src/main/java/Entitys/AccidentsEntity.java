@@ -16,7 +16,7 @@ import java.sql.Date;
  */
 public class AccidentsEntity {
     private int numAccident;
-    private Point2D.Float point;
+    private final Point2D.Float point;
     private String type;
     private String Commentaire;
     private Date date;

@@ -184,8 +184,8 @@
                     data: {json:points},
                     success:function(data){
                         for (j = 0; j < data.length; j++) {
-                            addWarning(map,data[j].type,data[j].y,data[j].x);
-                            console.log(data[j].type,data[j].y,data[j].x);
+                            addWarning(map,data[j].type,data[j].point.y,data[j].point.x);
+                            console.log(data[j]);
                             
                         }
                         

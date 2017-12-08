@@ -51,7 +51,7 @@ public class AccidentSurTrajet extends HttpServlet {
             DAO dao = new DAO(DataSourceFactory.getDataSource());
             
              String[] get = request.getParameterValues("json[]");
-              ArrayList<Point2D.Float> pointstosend = new ArrayList<Point2D.Float>();
+              ArrayList<AccidentsEntity> pointstosend = new ArrayList<AccidentsEntity>();
               List<AccidentsEntity> points = dao.listAccidents();
 
              for (String str : get) {
@@ -62,7 +62,7 @@ public class AccidentSurTrajet extends HttpServlet {
                  for (AccidentsEntity ac_point : points) {
   
                      if (distFrom(p,ac_point.getPoint())<500) {
-                         pointstosend.add(ac_point.getPoint());
+                         pointstosend.add(ac_point);
                      }
                  }
              }
